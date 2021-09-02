@@ -12,6 +12,13 @@
 /.next/
 /out/
 
+#keys
+/neardev
+
+#contracts
+target
+out
+
 # production
 /build
 
