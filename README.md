@@ -1,6 +1,6 @@
 ## Intro
 
-This is the repo for vSelf team public activity and source code storage for the METAbuidl hackathont run by Near project. We are a team of developers with specific framework and language preferences so we are building demo based on our tech stack preferences:
+This is the repo for vSelf team public activity and source code storage for the METAbuidl hackathon run by Near project. We are a team of developers with specific framework and language preferences so we are building demo based on our tech stack preferences:
 
 1. Next.js / React for web frontend
 2. Google Cloud Platform for hosting dockerized services
