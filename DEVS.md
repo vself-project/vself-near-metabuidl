@@ -2,11 +2,29 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+First you need to make sure you are using proper environment:
+
+1. Node.js (>=14) and yarn package manager
+1. Rustup and Rust nightly toolchain with wasm compilation target
+
+After you cloned the repository also install all requred dependencies:
+```bash
+yarn
+```
+
+## NEAR backend
+
+First, you want to compile contracts and deploy them to testnet:
+
+```bash
+yarn test:deploy
+```
+
+## Web application
+
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
@@ -22,13 +40,10 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 To learn more about Next.js, take a look at the following resources:
 
+- [NEAR Examples](https://examples.near.org/) - Wondering what you can build with NEAR? Check out these examples for inspiration! You can also view these examples on GitHub.
+- [NEAR University Resources](https://www.near.university/resources) - NEAR Resources Reading List. Whether you're a developer coming from web2 or web3 (eg. Ethereum) or a curious traveler wondering what all the fuss is about ... this page should help
+- [Rust Language](https://www.rust-lang.org/) - Rust programming language homepage
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
