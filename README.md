@@ -6,7 +6,7 @@ This is the repo for vSelf team public activity and source code storage for the 
 2. Google Cloud Platform for hosting dockerized services
 3. Backend and contracts in Rust
 
-We build a lottery game with a set of NFTs available as rewards for general audience. The project is delivered as a minimal viable web application with the corresponding NEAR-based backend +  documentation and code on this GitHub. This document is high level design concept, for technical details on how to run and operate the demo please refer to a separate [DEVS Documentation](DEVS.md)
+We build a lottery game with a set of NFTs available as rewards for general audience. The project is delivered as a minimal viable web application with the corresponding NEAR-based backend + documentation and code on this GitHub. This document is high level design concept, for technical details on how to run and operate the demo please refer to a separate [DEVS Documentation](DEVS.md)
 
 ## Concept
 
@@ -31,3 +31,15 @@ What we imagine as we develop our project further. This is description of user e
 - User sees his result of every transaction and already won rewards on the web page
  
  NFTs for rewards will be minted on testnet before demo begins, and probably they will be designed by our more artistic friends.
+
+ # TO DO
+ 1. Next.js + NearSDK (for contract interaction)
+ 1. Lootbox contract, logic (RULES.md) + implement (lootbox.rs) = linear
+ 1. NFT contract (nft-vself-metabuidl.rs) + Mint items for rewards
+ 1. Lootbox / NFT contracts interaction for distribution
+ 1. Web app UI/UX
+ - rules and intro
+ - engagement history and rewards
+ - wallet balance and login
+ - play button (to sign transaction and play)
+ 1. Metamask integration (Optional)

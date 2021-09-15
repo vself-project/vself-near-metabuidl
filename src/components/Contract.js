@@ -3,17 +3,25 @@ import * as nearAPI from 'near-api-js';
 import { GAS, parseNearAmount } from '../state/near';
 import {
     createAccessKeyAccount,
-    getContract,
+    getContract,    
 } from '../utils/near-utils';
+
+import getConfig from '../config'
 
 const {
     KeyPair,
     utils: { format: { formatNearAmount } }
 } = nearAPI;
 
+const {	
+	networkId, nodeUrl, walletUrl, nameSuffix,
+	contractName, contractMethods
+} = getConfig();
+
 export const Contract = ({ near, update, account }) => {
 
     if (!account) return null;
+    console.log('Account:', account);    
 
     const [credits, setCredits] = useState('');
     const [amount, setAmount] = useState('');
@@ -24,8 +32,11 @@ export const Contract = ({ near, update, account }) => {
     }, []);
 
     const updateCredits = async () => {
+        //const contract = new Contract(account, contractName, { ...contractMethods });
+        console.log('Contract name:', contractName);
+        console.log('Contract methods:', contractMethods);
         const contract = getContract(account);
-        console.log(contract.get_credits);
+        console.log('Contract:', contract);            
         setCredits(await contract.get_credits({ account_id: account.accountId }))
     };
 

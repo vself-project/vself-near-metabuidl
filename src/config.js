@@ -1,4 +1,4 @@
-const contractName = 'dev-1630614001291-17011517910111';
+const contractName = 'dev-1631686235516-94222184629487';
 
 module.exports = function getConfig(isServer = false) {
   let config = {
@@ -7,17 +7,17 @@ module.exports = function getConfig(isServer = false) {
     walletUrl: "https://wallet.testnet.near.org",
     helperUrl: "https://helper.testnet.near.org",
     contractName,
+    contractMethods: {
+      changeMethods: ["new", "deposit", "play"],
+      viewMethods: ["get_credits"],
+    },
   };  
 
   if (process.env.REACT_APP_ENV !== undefined) {
     config = {
       ...config,
       GAS: "200000000000000",
-      DEFAULT_NEW_ACCOUNT_AMOUNT: "20",
-      contractMethods: {
-        changeMethods: ["new", "deposit", "play"],
-        viewMethods: ["get_credits"],
-      },
+      DEFAULT_NEW_ACCOUNT_AMOUNT: "20",      
     };
   }
 
@@ -31,8 +31,6 @@ module.exports = function getConfig(isServer = false) {
       contractName: "near",
     };
   }
-
-  console.log(config);
 
   return config;
 };
