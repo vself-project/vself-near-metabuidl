@@ -10,7 +10,7 @@ We build a lottery game with a set of NFTs available as rewards for general audi
 
 ## Concept
 
-Currently we came up with a simple concept of an on-chain lottery which distributes a certain amount of preminted NFTs. The other part of the effort is related to Near / Metamask integration as in [challenge presented](https://airtable.com/shrdNEynK25TGJ91h/tblTtriXzrEiCfpoy/viwGhGQTKiJ4L5JSG/recSnmCyJrMNKDUcz), so we are also trying to see if we can make this happen during hackathon.
+Currently we came up with a simple concept of an on-chain lottery which distributes a certain amount of preminted NFTs. The other part of the effort is related to NEAR + Metamask integration as in [challenge presented](https://airtable.com/shrdNEynK25TGJ91h/tblTtriXzrEiCfpoy/viwGhGQTKiJ4L5JSG/recSnmCyJrMNKDUcz), so we are also trying to see if we can make this happen during hackathon.
 
 ### NEAR Contracts design
 
