@@ -14,6 +14,13 @@ const {
 } = nearAPI;
 
 export function getContract(account) {
+
+	// TO DO remove fix
+	const contractMethods = {
+		changeMethods: ["new", "play"],
+		viewMethods: ["get_balance"],
+	}
+		
 	return new Contract(account, contractName, { ...contractMethods });
 }
 

@@ -37,31 +37,23 @@ export const Contract = ({ near, update, account }) => {
         console.log('Contract methods:', contractMethods);
         const contract = getContract(account);
         console.log('Contract:', contract);            
-        setCredits(await contract.get_credits({ account_id: account.accountId }))
-    };
-
-    const handleDeposit = async () => {
-        const contract = getContract(account);
-        await contract.deposit({}, GAS, parseNearAmount(amount))
-        updateCredits()
-    };
+        setCredits(await contract.get_balance({ account_id: account.accountId }))
+    };    
 
     const handlePlay = async () => {
         const contract = getContract(account);
-        const outcome = await contract.play({}, GAS)
-        flips.push(outcome < 128)
+        const outcome = await contract.play({}, GAS, parseNearAmount(amount));
+        console.log("Game result:", outcome);
+        flips.push(true);
         updateCredits()
     };
 
     return <>
         <h3>Play</h3>
-        <p>Current Credits: { formatNearAmount(credits, 0) }</p>
-        <input placeholder="Credits (N)" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        <p>Current Balance: { formatNearAmount(credits, 0) }</p>
+        <input placeholder="Amount (N)" value={amount} onChange={(e) => setAmount(e.target.value)} />
         <br />
-        <button onClick={() => handleDeposit()}>Buy Credits</button>
-        <br />
-        <br />
-        <button onClick={() => handlePlay()}>Flip</button>
+        <button onClick={() => handlePlay()}>Play</button>
 
         {
             flips.map((f, i) => f ? <p key={i}>Won</p> : <p key={i}>Lost</p>)

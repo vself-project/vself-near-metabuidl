@@ -25,25 +25,26 @@ describe('deploy contract ' + contractName, () => {
 	test('contract hash', async () => {
 		let state = (await new Account(connection, contractName)).state();
 		expect(state.code_hash).not.toEqual('11111111111111111111111111111111');
+		contract = await getContract(alice)
 	});
 
-	test('check deposit', async () => {
-        contract = await getContract(alice)
-		await contract.deposit({}, GAS, parseNearAmount('19'));
-        const credits = await contract.get_credits({ account_id: alice.accountId })
-        expect(credits).toEqual(parseNearAmount('19'))
+	test('check balance', async () => {		
+		const reward = await contract.get_balance({ account_id: alice.accountId })
+		expect(reward).toEqual("0")
 	});
 
 	test('check play', async () => {
-        
-        for (let i = 0; i < 5; i++) {
-            const rand = await contract.play({}, GAS);
-            console.log(rand)
-            const credits = await contract.get_credits({ account_id: alice.accountId })
-            console.log(credits)
-        }
-
-        expect(true)
+		let total_reward;
+		for (let i = 0; i < 5; i++) {
+				const rand = await contract.play({}, GAS, parseNearAmount('2'));
+				console.log(rand)
+				const balance = await contract.get_balance({ account_id: alice.accountId })
+				console.log(balance)	
+				total_reward = balance;					
+		}
+		//const reward = await contract.get_balance({ account_id: alice.accountId })
+		//expect(reward).toEqual(total_reward)
+		expect(true)
 	});
 
 
