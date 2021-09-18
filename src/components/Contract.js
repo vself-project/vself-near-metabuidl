@@ -61,7 +61,7 @@ export const Contract = ({ near, update, account }) => {
   };
 
   return (
-    <div style={{ maxHeight: 500 }}>
+    <div>
       <div style={styles.container}>
         <Achivements />
         <p>Current Balance: {formatNearAmount(credits, 0)}</p>

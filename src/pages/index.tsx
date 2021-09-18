@@ -30,6 +30,7 @@ const Home: NextPage = () => {
 		<div style={{ minWidth: 800 }}>
       <Header {...{ wallet, account }} />
       <Contract {...{ near, update, wallet, account }} />
+      <Footer/>
 		</div>
 	);
 
