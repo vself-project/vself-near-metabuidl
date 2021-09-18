@@ -27,10 +27,9 @@ const Home: NextPage = () => {
 	}
     
 	return (
-		<div style={{ minWidth: 700 }}>
+		<div style={{ minWidth: 800 }}>
       <Header {...{ wallet, account }} />
       <Contract {...{ near, update, wallet, account }} />
-      <Footer/>
 		</div>
 	);
 

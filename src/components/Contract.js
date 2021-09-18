@@ -61,7 +61,7 @@ export const Contract = ({ near, update, account }) => {
   };
 
   return (
-    <span>
+    <div style={{ maxHeight: 500 }}>
       <div style={styles.container}>
         <Achivements />
         <p>Current Balance: {formatNearAmount(credits, 0)}</p>
@@ -81,16 +81,16 @@ export const Contract = ({ near, update, account }) => {
         {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
       </div>
       <Image src={backgroundImage} alt='No image' width={700} height={500} layout='responsive' />
-    </span>
+    </div>
   );
 };
 
 const styles = {
   container: {
-    minWidth: 700,
+    minWidth: 800,
     width: '100%',
     height: 500,
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    //backgroundColor: 'rgba(255,255,255,0.8)',
     position: 'absolute',
     zIndex: 10,
     display: 'flex',
@@ -100,7 +100,7 @@ const styles = {
   },
   instructions: {
     width: 450,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.7)',
     borderRadius: 4,
     display: 'flex',
     justifyContent: 'center',

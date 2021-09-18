@@ -15,5 +15,6 @@ const styles = {
     alignItems: 'center',
     padding: '10px 10px 10px 10px',
     border: '1px solid black',
+    margin: '50px 0 0 0',
   },
 };
