@@ -20,6 +20,8 @@ const { networkId, nodeUrl, walletUrl, nameSuffix, contractName, contractMethods
 const INSTRUCTIONS =
   'Welcome to Lootbox game! \n Here, you have a chance to win one of our amazing NFTs. Give it a try! Connect your NEAR wallet to collect it.';
 
+const COUNTERS = [7, 3, 0, 1, 0];
+
 export const Contract = ({ near, update, wallet, account }) => {
   const [credits, setCredits] = useState('');
   const [amount, setAmount] = useState('');
@@ -62,7 +64,7 @@ export const Contract = ({ near, update, wallet, account }) => {
     return (
       <div>
         <div style={styles.container}>
-          <Achivements />
+          <Achivements counters={COUNTERS} />
           <p>Current Balance: {formatNearAmount(credits, 0)}</p>
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
@@ -79,7 +81,13 @@ export const Contract = ({ near, update, wallet, account }) => {
 
           {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
         </div>
-        <Image src={backgroundImage} alt='No image' width={700} height={500} layout='responsive' />
+        <Image
+          src={backgroundImage}
+          alt='No image'
+          width={1500}
+          height={1000}
+          layout='responsive'
+        />
       </div>
     );
   } else {
@@ -98,7 +106,7 @@ const styles = {
   container: {
     minWidth: 800,
     width: '100%',
-    height: 500,
+    height: 700,
     //backgroundColor: 'rgba(255,255,255,0.8)',
     position: 'absolute',
     zIndex: 10,
