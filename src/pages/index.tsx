@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { appStore, onAppMount } from '../state/app';
-import { Wallet } from '../components/Wallet';
 import { Contract } from '../components/Contract';
+import { Header } from '../components/Header';
+import { Footer } from '../components/Footer';
 
 //import '../App.css';
 import type { NextPage } from 'next'
@@ -26,9 +27,10 @@ const Home: NextPage = () => {
 	}
     
 	return (
-		<div className="root">
-			<Wallet {...{ wallet, account }} />
-			<Contract {...{ near, update, wallet, account }} />
+		<div style={{ minWidth: 700 }}>
+      <Header {...{ wallet, account }} />
+      <Contract {...{ near, update, wallet, account }} />
+      <Footer/>
 		</div>
 	);
 
