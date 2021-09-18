@@ -49,7 +49,9 @@ export const Contract = ({ near, update, account }) => {
     console.log('Contract methods:', contractMethods);
     const contract = getContract(account);
     console.log('Contract:', contract);
-    setCredits(await contract.get_balance({ account_id: account.accountId }));
+    const balance = await contract.get_balance({ account_id: account.accountId });
+    console.log('Rewards balance:', balance);
+    setCredits(balance);
   };
 
   const handlePlay = async () => {
@@ -64,7 +66,7 @@ export const Contract = ({ near, update, account }) => {
     <div style={{ maxHeight: 500 }}>
       <div style={styles.container}>
         <Achivements />
-        <p>Current Balance: {formatNearAmount(credits, 0)}</p>
+        <p>Current Balance: {credits}</p>
         <div style={styles.instructions}>{INSTRUCTIONS}</div>
         <div style={styles.gameContainer}>
           <input
