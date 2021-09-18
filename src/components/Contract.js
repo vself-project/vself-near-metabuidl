@@ -20,17 +20,14 @@ const { networkId, nodeUrl, walletUrl, nameSuffix, contractName, contractMethods
 const INSTRUCTIONS =
   'Welcome to Lootbox game! \n Here, you have a chance to win one of our amazing NFTs. Give it a try! Connect your NEAR wallet to collect it.';
 
-export const Contract = ({ near, update, account }) => {
-  if (!account) return null;
-  console.log('Account:', account);
-
+export const Contract = ({ near, update, wallet, account }) => {
   const [credits, setCredits] = useState('');
   const [amount, setAmount] = useState('');
   const [flips, setFlips] = useState([]);
 
   useEffect(() => {
     updateCredits();
-  }, []);
+  }, [account]);
 
   // It allows input element to accept only digits
   const validateNumericInput = (value) => {
@@ -44,6 +41,7 @@ export const Contract = ({ near, update, account }) => {
   };
 
   const updateCredits = async () => {
+    if (!account) return;
     //const contract = new Contract(account, contractName, { ...contractMethods });
     console.log('Contract name:', contractName);
     console.log('Contract methods:', contractMethods);
@@ -60,29 +58,40 @@ export const Contract = ({ near, update, account }) => {
     updateCredits();
   };
 
-  return (
-    <div>
-      <div style={styles.container}>
-        <Achivements />
-        <p>Current Balance: {formatNearAmount(credits, 0)}</p>
-        <div style={styles.instructions}>{INSTRUCTIONS}</div>
-        <div style={styles.gameContainer}>
-          <input
-            placeholder='Amount (N)'
-            value={amount}
-            onChange={(e) => validateNumericInput(e.target.value)}
-            style={styles.input}
-          />
-          <button onClick={() => handlePlay()} style={styles.button}>
-            Play
-          </button>
-        </div>
+  if (wallet && wallet.signedIn) {
+    return (
+      <div>
+        <div style={styles.container}>
+          <Achivements />
+          <p>Current Balance: {formatNearAmount(credits, 0)}</p>
+          <div style={styles.instructions}>{INSTRUCTIONS}</div>
+          <div style={styles.gameContainer}>
+            <input
+              placeholder='Amount (N)'
+              value={amount}
+              onChange={(e) => validateNumericInput(e.target.value)}
+              style={styles.input}
+            />
+            <button onClick={() => handlePlay()} style={styles.button}>
+              Play
+            </button>
+          </div>
 
-        {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
+          {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
+        </div>
+        <Image src={backgroundImage} alt='No image' width={700} height={500} layout='responsive' />
       </div>
-      <Image src={backgroundImage} alt='No image' width={700} height={500} layout='responsive' />
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <div style={styles.container}>
+          <div style={styles.instructions}>{INSTRUCTIONS}</div>
+        </div>
+        <Image src={backgroundImage} alt='No image' width={700} height={500} layout='responsive' />
+      </div>
+    );
+  }
 };
 
 const styles = {

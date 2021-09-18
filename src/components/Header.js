@@ -16,8 +16,7 @@ export const Header = ({ wallet, account }) => {
   }
 
   return (
-    <div style={styles.container}>
-      <></>
+    <div style={{ ...styles.container, ...styles.flexEnd }}>
       <button style={styles.button} onClick={() => wallet.signIn()}>
         {'Sign In'}
       </button>
@@ -45,5 +44,8 @@ const styles = {
   },
   button: {
     margin: 0,
+  },
+  flexEnd: {
+    justifyContent: 'flex-end',
   },
 };
