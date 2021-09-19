@@ -1,7 +1,7 @@
 [package]
-name = "basic-token"
+name = "lootbox-game"
 version = "0.1.0"
-authors = ["Near Inc <hello@near.org>"]
+authors = ["vSelf Hackathon team <ie@vself.app>"]
 edition = "2018"
 
 [lib]

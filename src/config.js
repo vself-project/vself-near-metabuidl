@@ -1,34 +1,34 @@
-const contractName = 'dev-1632056085447-91857424362241';
+const contractName = 'dev-1632076977128-72207799678642';
 
 module.exports = function getConfig(isServer = false) {
   let config = {
-    networkId: "testnet",
-    nodeUrl: "https://rpc.testnet.near.org",
-    walletUrl: "https://wallet.testnet.near.org",
-    helperUrl: "https://helper.testnet.near.org",
-    contractName,    
-  };  
+    networkId: 'testnet',
+    nodeUrl: 'https://rpc.testnet.near.org',
+    walletUrl: 'https://wallet.testnet.near.org',
+    helperUrl: 'https://helper.testnet.near.org',
+    contractName,
+  };
 
   if (process.env.REACT_APP_ENV !== undefined) {
     config = {
       ...config,
       contractMethods: {
-        changeMethods: ["new", "play"],
-        viewMethods: ["get_balance"],
+        changeMethods: ['new', 'play'],
+        viewMethods: ['get_balance', 'get_nft_total_balance'],
       },
-      GAS: "200000000000000",
-      DEFAULT_NEW_ACCOUNT_AMOUNT: "20",      
+      GAS: '200000000000000',
+      DEFAULT_NEW_ACCOUNT_AMOUNT: '20',
     };
   }
 
-  if (process.env.REACT_APP_ENV === "prod") {
+  if (process.env.REACT_APP_ENV === 'prod') {
     config = {
       ...config,
-      networkId: "mainnet",
-      nodeUrl: "https://rpc.mainnet.near.org",
-      walletUrl: "https://wallet.near.org",
-      helperUrl: "https://helper.mainnet.near.org",
-      contractName: "near",
+      networkId: 'mainnet',
+      nodeUrl: 'https://rpc.mainnet.near.org',
+      walletUrl: 'https://wallet.near.org',
+      helperUrl: 'https://helper.mainnet.near.org',
+      contractName: 'near',
     };
   }
 

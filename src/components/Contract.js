@@ -20,17 +20,14 @@ const {
 
 const { networkId, nodeUrl, walletUrl, nameSuffix, contractName, contractMethods } = getConfig();
 
-const COUNTERS = [7, 3, 0, 1, 0];
-
 export const Contract = ({ near, update, wallet, account }) => {
-  const [credits, setCredits] = useState('');
+  const [balance, setBalance] = useState('');
   const [amount, setAmount] = useState('');
-  const [flips, setFlips] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newAward, setNewAward] = useState(null);
 
   useEffect(() => {
-    updateCredits();
+    updateBalance();
   }, [account]);
 
   // It allows input element to accept only digits
@@ -44,7 +41,7 @@ export const Contract = ({ near, update, wallet, account }) => {
     setAmount(value);
   };
 
-  const updateCredits = async () => {
+  const updateBalance = async () => {
     if (!account) return;
     //const contract = new Contract(account, contractName, { ...contractMethods });
     console.log('Contract name:', contractName);
@@ -53,15 +50,18 @@ export const Contract = ({ near, update, wallet, account }) => {
     console.log('Contract:', contract);
     const balance = await contract.get_balance({ account_id: account.accountId });
     console.log('Rewards balance:', balance);
-    setCredits(balance);
+    console.log('Gas', GAS);
+    setBalance(balance);
   };
 
   const handlePlay = async () => {
     const contract = getContract(account);
-    const outcome = await contract.play({}, GAS, parseNearAmount(amount));
+    const gas = '200000000000000';
+    const outcome = await contract.play({}, gas, parseNearAmount(amount));
     console.log('Game result:', outcome);
-    flips.push(true);
-    updateCredits();
+    setNewAward(outcome);
+    setShowModal(true);
+    updateBalance();
   };
 
   if (wallet && wallet.signedIn) {
@@ -70,8 +70,7 @@ export const Contract = ({ near, update, wallet, account }) => {
         {showModal && <Modal award={newAward} onClick={() => setShowModal(false)} />}
 
         <div style={styles.container}>
-          <Achivements counters={COUNTERS} />
-          <p>Current Balance: {formatNearAmount(credits, 0)}</p>
+          <Achivements counters={balance} />
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
             <input
@@ -82,8 +81,6 @@ export const Contract = ({ near, update, wallet, account }) => {
             />
             <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />
           </div>
-
-          {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
         </div>
 
         <Image

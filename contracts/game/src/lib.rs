@@ -6,6 +6,7 @@ use near_sdk::{
     json_types::{ U128, Base58PublicKey, ValidAccountId },
 };
 use serde::Serialize;
+use std::convert::TryInto;
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -16,21 +17,20 @@ const PROB:u8 = 255; // 100%
 
 const GAS_FOR_MINTING: Gas = 10_000_000_000_000;
 const GAS_FOR_RESOLVE_TRANSFER: Gas = 10_000_000_000_000;
-const GAS_FOR_NFT_TRANSFER_CALL: Gas = 25_000_000_000_000 + GAS_FOR_RESOLVE_TRANSFER;
 const NO_DEPOSIT: Balance = 0;
 const MIN_ATTACHED_DEPOSIT: u128 = 100_000_000_000_000_000_000_000;
 pub type TokenId = String;
 
 /// Game rules
 
-const PROB_EPIC:u8 = 1; 
-const PROB_LEGENDARY:u8 = 2;
-const PROB_RARE:u8 = 4;
+const PROB_LEGENDARY:u8 = 4;
+const PROB_EPIC:u8 = 16; 
+const PROB_RARE:u8 = 64;
 const PROB_UNCOMMON:u8 = 128;
 
-const CAP_EPIC:u32 = 1;
 const CAP_LEGENDARY:u32 = 4;
-const CAP_RARE:u32 = 16;
+const CAP_EPIC:u32 = 16;
+const CAP_RARE:u32 = 32;
 const CAP_UNCOMMON:u32 = 128;
 
 #[near_bindgen]
@@ -38,8 +38,13 @@ const CAP_UNCOMMON:u32 = 128;
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct LootboxGame {
     pub owner_id: AccountId,
-    //pub minted: Vec<Balance>, // All tokens minted durign the game
-    pub rewards: UnorderedMap<AccountId, Balance>, // Individual users rewards
+    // All tokens minted durign the game
+    pub minted_legendary: u32,
+    pub minted_epic: u32,
+    pub minted_rare: u32,
+    pub minted_uncommon: u32,
+    pub minted_common: u32,
+    pub rewards: UnorderedMap<AccountId, Vec<u32>>, // Individual users rewards counter
 }
 
 impl Default for LootboxGame {
@@ -54,10 +59,17 @@ impl LootboxGame {
     pub fn new(owner_id: AccountId) -> Self {
         assert!(env::is_valid_account_id(owner_id.as_bytes()), "Invalid owner account");
         assert!(!env::state_exists(), "Already initialized");
-        Self {
-            owner_id,            
+        let mut this = Self {
+            owner_id,
+            minted_legendary: 0,
+            minted_epic: 0,
+            minted_rare: 0,
+            minted_uncommon: 0,
+            minted_common: 0,
             rewards: UnorderedMap::new(b"rewards".to_vec()),
-        }
+        };
+
+        this        
     }
     
     #[payable]
@@ -74,15 +86,28 @@ impl LootboxGame {
         let mut metadata: String = "Congrats!".to_string();
 
         // Decide what to mint for the player
-        if rand < PROB_LEGENDARY {            
+        if (rand < PROB_LEGENDARY) && (self.minted_legendary < CAP_LEGENDARY) {            
             token_id = "LEGENDARY".to_string();
-        }     
+        } else if (rand < PROB_EPIC) && (self.minted_epic < CAP_EPIC) {
+            token_id = "EPIC".to_string();
+        } else if (rand < PROB_RARE) && (self.minted_rare < CAP_RARE) {
+            token_id = "RARE".to_string();
+        } else if (rand < PROB_UNCOMMON) && (self.minted_uncommon < CAP_UNCOMMON) {
+            token_id = "UNCOMMON".to_string();            
+        } else {
+            // Common
+            token_id = "COMMON".to_string();            
+        }
+
+        // Add time for token uniqness
+        let timestamp: u64 = env::block_timestamp();
+        let token_id_with_timestamp: String = format!("{}:{}", token_id.clone(), timestamp);
 
         // Transfer reward to the player
         // call NFT contract transfer call function
         ext_nft::nft_mint(
             account_id.clone(),
-            token_id.clone(),
+            token_id_with_timestamp.clone(),
             metadata.clone(), // lootbox contract is the owner            
             &"nft.vself.testnet",
             10 * MICRO_NEAR, // minting cost
@@ -93,7 +118,7 @@ impl LootboxGame {
             &env::current_account_id(),
             NO_DEPOSIT,
             GAS_FOR_RESOLVE_TRANSFER,
-        ))        
+        )) 
     }
 
     /// self callback
@@ -101,30 +126,59 @@ impl LootboxGame {
         &mut self,        
         token_id: TokenId,
         winner_id: AccountId,
-    ) -> bool {
-        env::log(format!("Promise Result {:?}", env::promise_result(0)).as_bytes());
+    ) -> i32 {
+        env::log(format!("Promise Result {:?}", env::promise_result(0)).as_bytes());        
 
         // value is nothing, checking if nft_transfer was Successful promise execution
         if let PromiseResult::Successful(_value) = env::promise_result(0) {            
             // Update rewards balance
-            let mut balance = self.rewards.get(&winner_id).unwrap_or(0);
-            balance = balance + 1;
-            self.rewards.insert(&winner_id, &balance);
-            return true;
-        }
-        // no promise result        
-        return false;
-    }
+            let mut balance = self.rewards.get(&winner_id).unwrap_or(vec![0,0,0,0,0]);                        
+            let mut result: usize = 0;
+            
+            if (token_id == "COMMON") {                 
+                result = 0;
+                self.minted_common = self.minted_common + 1;
+            }
+            if (token_id == "UNCOMMON") { 
+                result = 1;                
+                self.minted_uncommon = self.minted_uncommon + 1;
+            }
+            if (token_id == "RARE") { 
+                result = 2;                
+                self.minted_rare = self.minted_rare + 1;
+            }
+            if (token_id == "EPIC") { 
+                result = 3;                
+                self.minted_epic = self.minted_epic + 1;
+            }
+            if (token_id == "LEGENDARY") { 
+                result = 4;
+                self.minted_legendary = self.minted_legendary + 1;
+            }
 
+            balance[result] = balance[result] + 1;
+            self.rewards.insert(&winner_id, &balance);
+            return result.try_into().unwrap();
+        }
+
+        // no promise result        
+        return -1;
+    }
 
     /// Views
-    pub fn get_balance(&self, account_id: AccountId) -> U128 {
-        self.rewards.get(&account_id).unwrap_or(0).into()
+    pub fn get_balance(&self, account_id: AccountId) -> Vec<u32> {
+        self.rewards.get(&account_id).unwrap_or(vec![0, 0, 0, 0, 0])
     }
-
-    pub fn get_nft_balance(&self, account_id: AccountId) -> U128 {
-        self.rewards.get(&account_id).unwrap_or(0).into()
-    }    
+    
+    pub fn get_nft_total_balance(&self) -> Vec<u32> {
+        vec![
+            self.minted_common,
+            self.minted_uncommon,
+            self.minted_rare,
+            self.minted_epic,
+            self.minted_legendary,
+        ]
+    }
 }
 
 /// External contract interface

@@ -42,17 +42,18 @@ describe('deploy contract ' + contractName, () => {
 
   test('check balance', async () => {
     const reward = await contract.get_balance({ account_id: alice.accountId });
-    expect(reward).toEqual('0');
+    expect(reward).toEqual([0, 0, 0, 0, 0]);
   });
 
   test('check play', async () => {
     let total_reward;
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 5; i++) {
       const rand = await contract.play({}, GAS, parseNearAmount('2'));
       console.log(rand);
       const balance = await contract.get_balance({ account_id: alice.accountId });
       console.log(balance);
-      total_reward = balance;
+      const total = await contract.get_nft_total_balance();
+      console.log(total);
     }
     //const reward = await contract.get_balance({ account_id: alice.accountId })
     //expect(reward).toEqual(total_reward)
