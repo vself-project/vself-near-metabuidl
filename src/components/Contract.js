@@ -133,8 +133,14 @@ const styles = {
     padding: '30px 0px 10px 0px',
   },
   input: {
-    width: 100,
+    width: 120,
+    height: 40,
+    borderRadius: 5,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    border: '1px solid gray',
     margin: '0 20px 0 0',
+    padding: '0 0 0 10px',
+    fontSize: 15,
   },
   button: {
     margin: 0,
