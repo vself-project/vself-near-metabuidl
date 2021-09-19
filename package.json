@@ -7,9 +7,11 @@
     "build": "REACT_APP_ENV=dev next build",
     "start": "REACT_APP_ENV=dev next start",
     "lint": "REACT_APP_ENV=dev next lint",
-    "build:contracts": "cd contracts/game && ./build.sh && cd ../.. && cd contracts/nft-simple && ./build.sh && cd ../..",        
+    "build:contracts": "cd contracts/nft-simple && ./build.sh && cd ../.. && cd contracts/game && ./build.sh && cd ../..",
     "patch:config": "node ./utils/patch-config.js",
     "dev:deploy": "yarn build:contracts && rm -rf neardev && (near dev-deploy || exit 0) && yarn patch:config",
+    "deploy:lootbox": "near deploy --accountId=lootbox.vself.testnet --wasmFile=./out/main.wasm",
+    "deploy:nft": "near deploy --accountId=nft.vself.testnet --wasmFile=./out/nft.wasm",
     "test": "REACT_APP_ENV=dev jest app.test.js --useStderr",
     "test:unit": "(cd contracts && cargo test -- --nocapture --color always)",
     "test:deploy": "yarn dev:deploy && yarn test"

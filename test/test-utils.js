@@ -1,5 +1,5 @@
-const BN = require("bn.js");
-const nearAPI = require("near-api-js");
+const BN = require('bn.js');
+const nearAPI = require('near-api-js');
 const {
   KeyPair,
   Account,
@@ -8,30 +8,20 @@ const {
     format: { parseNearAmount },
   },
 } = nearAPI;
-const {
-  near,
-  connection,
-  keyStore,
-  contract,
-  contractAccount,
-} = require("./near-utils");
-const getConfig = require("../src/config");
-const { networkId, contractName, contractMethods, DEFAULT_NEW_ACCOUNT_AMOUNT } =
-  getConfig();
+const { near, connection, keyStore, contract, contractAccount } = require('./near-utils');
+const getConfig = require('../src/config');
+const { networkId, contractName, contractMethods, DEFAULT_NEW_ACCOUNT_AMOUNT } = getConfig();
 
 /********************************
 Internal Helpers
 ********************************/
-async function createAccount(
-  accountId,
-  fundingAmount = DEFAULT_NEW_ACCOUNT_AMOUNT
-) {
+async function createAccount(accountId, fundingAmount = DEFAULT_NEW_ACCOUNT_AMOUNT) {
   const contractAccount = new Account(connection, contractName);
-  const newKeyPair = KeyPair.fromRandom("ed25519");
+  const newKeyPair = KeyPair.fromRandom('ed25519');
   await contractAccount.createAccount(
     accountId,
     newKeyPair.publicKey,
-    new BN(parseNearAmount(fundingAmount))
+    new BN(parseNearAmount(fundingAmount)),
   );
   keyStore.setKey(networkId, accountId, newKeyPair);
   return new nearAPI.Account(connection, accountId);
@@ -39,15 +29,11 @@ async function createAccount(
 
 const getSignature = async (account) => {
   const { accountId } = account;
-  const block = await account.connection.provider.block({ finality: "final" });
+  const block = await account.connection.provider.block({ finality: 'final' });
   const blockNumber = block.header.height.toString();
   const signer = account.inMemorySigner || account.connection.signer;
-  const signed = await signer.signMessage(
-    Buffer.from(blockNumber),
-    accountId,
-    networkId
-  );
-  const blockNumberSignature = Buffer.from(signed.signature).toString("base64");
+  const signed = await signer.signMessage(Buffer.from(blockNumber), accountId, networkId);
+  const blockNumberSignature = Buffer.from(signed.signature).toString('base64');
   return { blockNumber, blockNumberSignature };
 };
 
@@ -77,11 +63,8 @@ async function getContract(account) {
   });
 }
 
-async function getAccount(
-  accountId,
-  fundingAmount = DEFAULT_NEW_ACCOUNT_AMOUNT
-) {
-  accountId = accountId || generateUniqueString("test");
+async function getAccount(accountId, fundingAmount = DEFAULT_NEW_ACCOUNT_AMOUNT) {
+  accountId = accountId || generateUniqueString('test');
   const account = new nearAPI.Account(connection, accountId);
   try {
     await account.state();
@@ -101,8 +84,8 @@ const createAccessKeyAccount = (key) => {
 
 const postSignedJson = async ({ account, contractName, url, data = {} }) => {
   return await fetch(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       ...data,
       accountId: account.accountId,
@@ -117,8 +100,8 @@ const postSignedJson = async ({ account, contractName, url, data = {} }) => {
 
 const postJson = async ({ url, data = {} }) => {
   return await fetch(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ ...data }),
   }).then((res) => {
     console.log(res);
