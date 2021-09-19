@@ -3,11 +3,11 @@ use crate::*;
 #[near_bindgen]
 impl Contract {
     #[payable]
-    pub fn nft_mint(&mut self, token_id: TokenId, metadata: String) {
+    pub fn nft_mint(&mut self, receiver_id: AccountId, token_id: TokenId, metadata: String) {
         let initial_storage_usage = env::storage_usage();
         // self.assert_owner();
         let token = Token {
-            owner_id: env::predecessor_account_id(),
+            owner_id: receiver_id.to_string(),
             metadata,
             approved_account_ids: Default::default(),
             approval_id: 0,
