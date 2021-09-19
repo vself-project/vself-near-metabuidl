@@ -14,6 +14,9 @@ export const RARITY_IMAGES = {
   legendary: legendaryRarityImage,
 };
 
+// NFT balance key in storage
+export const STORAGE_BALANCE_KEY = 'NFT_BALANCE';
+
 // Cost of one game in NEAR
 export const GAME_COST = '2';
 

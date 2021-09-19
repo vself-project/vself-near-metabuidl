@@ -9,11 +9,11 @@ import backgroundImage from '../public/background.jpg';
 import { Achivements } from './Achivements';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import { INSTRUCTIONS, GAME_COST, NFT_SUPPLIES } from '../constants/general';
+import { INSTRUCTIONS, GAME_COST, NFT_SUPPLIES, STORAGE_BALANCE_KEY } from '../constants/general';
 
 const { contractName, contractMethods } = getConfig();
 
-export const Contract = ({ near, update, wallet, account }) => {
+export const Contract = ({ wallet, account }) => {
   const [balance, setBalance] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [newAward, setNewAward] = useState(null);
@@ -25,13 +25,15 @@ export const Contract = ({ near, update, wallet, account }) => {
   // Check if user has won the nft
   useEffect(() => {
     if (balance === '') return;
-    const oldBalance = get('OLD_BALANCE');
+    const oldBalance = get(STORAGE_BALANCE_KEY);
     if (Object.keys(oldBalance).length == 0) return;
     for (var i = 0; i < oldBalance.length; i++) {
-      if (oldBalance[i] == balance[i]) continue;
-      set('OLD_BALANCE', balance);
-      setNewAward(i);
-      setShowModal(true);
+      if (oldBalance[i] < balance[i]) {
+        set(STORAGE_BALANCE_KEY, balance);
+        setNewAward(i);
+        setShowModal(true);
+        break;
+      }
     }
   }, [balance]);
 
@@ -43,7 +45,7 @@ export const Contract = ({ near, update, wallet, account }) => {
     const contract = getContract(account);
     console.log('Contract:', contract);
     const balance = await contract.get_balance({ account_id: account.accountId });
-    const nftTotalBalance = await contract.get_nft_total_balance();
+    //const nftTotalBalance = await contract.get_nft_total_balance();
     console.log('Rewards balance:', balance);
     console.log('Gas', GAS);
     setBalance(balance);
@@ -53,7 +55,7 @@ export const Contract = ({ near, update, wallet, account }) => {
     const contract = getContract(account);
     const gas = '200000000000000';
     const balance = await contract.get_balance({ account_id: account.accountId });
-    set('OLD_BALANCE', balance);
+    set(STORAGE_BALANCE_KEY, balance);
     const outcome = await contract.play({}, gas, parseNearAmount(GAME_COST));
     console.log('Game result:', outcome);
   };
