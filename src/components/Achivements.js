@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { RARITY_IMAGES } from '../constants/general';
 
 const Achivement = ({ rarity, counter, supply }) => {
+  if (counter === undefined) return null;
   const data = supply < 0 ? counter : `${counter}/${supply}`;
   return (
     <div key={rarity} style={styles.achivementContainer}>
