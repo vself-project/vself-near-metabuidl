@@ -1,4 +1,4 @@
-const contractName = 'dev-1632076977128-72207799678642';
+const contractName = 'dev-1632088006637-63596372194923';
 
 module.exports = function getConfig(isServer = false) {
   let config = {
@@ -24,11 +24,11 @@ module.exports = function getConfig(isServer = false) {
   if (process.env.REACT_APP_ENV === 'prod') {
     config = {
       ...config,
-      networkId: 'mainnet',
-      nodeUrl: 'https://rpc.mainnet.near.org',
-      walletUrl: 'https://wallet.near.org',
-      helperUrl: 'https://helper.mainnet.near.org',
-      contractName: 'near',
+      networkId: 'testnet',
+      nodeUrl: 'https://rpc.testnet.near.org',
+      walletUrl: 'https://wallet.testnet.near.org',
+      helperUrl: 'https://helper.testnet.near.org',
+      contractName: 'lootbox.vself.testnet',
     };
   }
 

@@ -24,10 +24,10 @@ const PROB_EPIC:u8 = 16;
 const PROB_RARE:u8 = 64;
 const PROB_UNCOMMON:u8 = 128;
 
-const CAP_LEGENDARY:u32 = 4;
-const CAP_EPIC:u32 = 16;
-const CAP_RARE:u32 = 32;
-const CAP_UNCOMMON:u32 = 128;
+const CAP_LEGENDARY:u32 = 4*2;
+const CAP_EPIC:u32 = 16*2;
+const CAP_RARE:u32 = 64*2;
+const CAP_UNCOMMON:u32 = 128*2;
 
 #[near_bindgen]
 

@@ -8,6 +8,7 @@ First you need to make sure you are using proper environment:
 1. Rustup and Rust nightly toolchain with wasm compilation target
 
 After you cloned the repository also install all requred dependencies:
+
 ```bash
 yarn
 ```
