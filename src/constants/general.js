@@ -23,8 +23,13 @@ export const GAME_COST = '2';
 // Limits for nfts amount from common to legendary
 export const NFT_SUPPLIES = [-1, 256, 64, 32, 8];
 
+export const GITHUB_PAGE = 'https://github.com/vself-project/vself-near-metabuidl';
+
 // Text constants
-export const FOOTER_TEXT =
-  'Thanks to NEAR team for this wonderful hackathon! Visit us and see source code on github at https://github.com/vself-project/vself-near-metabuidl';
+export const FOOTER_TEXT = [
+  'Thanks to NEAR team for this wonderful hackathon! Visit us and see ',
+  'source code',
+  ' on github.',
+];
 export const INSTRUCTIONS =
   'Welcome to the Loot Box game! \n Here, you have a chance to win one of our amazing Dino-NFTs. Give it a try for only 2 NEAR per round! Connect your NEAR wallet to collect it.';
