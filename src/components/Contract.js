@@ -9,7 +9,7 @@ import backgroundImage from '../public/background.jpg';
 import { Achivements } from './Achivements';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import { INSTRUCTIONS, GAME_COST } from '../constants/general';
+import { INSTRUCTIONS, GAME_COST, NFT_SUPPLIES } from '../constants/general';
 
 const {
   KeyPair,
@@ -37,12 +37,13 @@ export const Contract = ({ near, update, wallet, account }) => {
     const contract = getContract(account);
     console.log('Contract:', contract);
     const balance = await contract.get_balance({ account_id: account.accountId });
+    const nftTotalBalance = await contract.get_nft_total_balance();
+    console.log({ nftTotalBalance });
     console.log('Rewards balance:', balance);
     console.log('Gas', GAS);
     setBalance(balance);
   };
 
-  // TO DO parseNearAmount
   const handlePlay = async () => {
     const contract = getContract(account);
     const gas = '200000000000000';
@@ -59,7 +60,7 @@ export const Contract = ({ near, update, wallet, account }) => {
         {showModal && <Modal award={newAward} onClick={() => setShowModal(false)} />}
 
         <div style={styles.container}>
-          <Achivements counters={balance} />
+          <Achivements counters={balance} supplies={NFT_SUPPLIES} />
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
             <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />

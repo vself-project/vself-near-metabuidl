@@ -14,7 +14,11 @@ export const RARITY_IMAGES = {
   legendary: legendaryRarityImage,
 };
 
-export const GAME_COST = '2';
+// Cost of one game in NEAR
+export const GAME_COST = 2;
+
+// Limits for nfts amount from common to legendary
+export const NFT_SUPPLIES = [-1, 128, 32, 16, 4];
 
 // Text constants
 export const FOOTER_TEXT = 'Footer text';

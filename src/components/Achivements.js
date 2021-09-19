@@ -2,7 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import { RARITY_IMAGES } from '../constants/general';
 
-const Achivement = ({ rarity, counter }) => {
+const Achivement = ({ rarity, counter, supply }) => {
+  const data = supply < 0 ? counter : `${counter}/${supply}`;
   return (
     <div key={rarity} style={styles.achivementContainer}>
       <p style={styles.label}>{rarity}</p>
@@ -14,17 +15,24 @@ const Achivement = ({ rarity, counter }) => {
           height={136}
           layout='intrinsic'
         />
-        <div style={styles.counter}>{counter}</div>
+        <div style={styles.counterBox}>
+          <div style={styles.counter}>{data}</div>
+        </div>
       </div>
     </div>
   );
 };
 
-export const Achivements = ({ counters }) => {
+export const Achivements = ({ counters, supplies }) => {
   return (
     <div style={styles.container}>
       {Object.keys(RARITY_IMAGES).map((rarity, index) => (
-        <Achivement key={index} rarity={rarity} counter={counters[index]} />
+        <Achivement
+          key={index}
+          rarity={rarity}
+          counter={counters[index]}
+          supply={supplies[index]}
+        />
       ))}
     </div>
   );
@@ -59,14 +67,21 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
   },
-  counter: {
+  counterBox: {
     position: 'absolute',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#022e52',
+    width: 136,
+    height: 136,
     zIndex: 10,
-    margin: '110px 0 0 126px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+    color: 'white',
+  },
+  counter: {
+    height: 30,
+    backgroundColor: '#022e52',
+    margin: '-2px 0 0 0',
+    padding: '0 8px 0 8px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
