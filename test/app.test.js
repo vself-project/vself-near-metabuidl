@@ -30,7 +30,12 @@ describe('deploy contract ' + contractName, () => {
   let alice, contract;
 
   beforeAll(async () => {
-    alice = await getAccount();
+    if (contractName == 'lootbox.vself.testnet') {
+      alice = await getAccount(contractName);
+    } else {
+      alice = await getAccount();
+    }
+
     await initContract(alice.accountId);
   });
 
