@@ -9,7 +9,7 @@ import backgroundImage from '../public/background.jpg';
 import { Achivements } from './Achivements';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import { INSTRUCTIONS } from '../constants/general';
+import { INSTRUCTIONS, GAME_COST } from '../constants/general';
 
 const {
   KeyPair,
@@ -22,24 +22,12 @@ const { networkId, nodeUrl, walletUrl, nameSuffix, contractName, contractMethods
 
 export const Contract = ({ near, update, wallet, account }) => {
   const [balance, setBalance] = useState('');
-  const [amount, setAmount] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [newAward, setNewAward] = useState(null);
 
   useEffect(() => {
     updateBalance();
   }, [account]);
-
-  // It allows input element to accept only digits
-  const validateNumericInput = (value) => {
-    if (!Number(value) && value !== '') {
-      return;
-    }
-    if (value.slice(-1) == '.') {
-      value = value.slice(0, -1);
-    }
-    setAmount(value);
-  };
 
   const updateBalance = async () => {
     if (!account) return;
@@ -54,10 +42,11 @@ export const Contract = ({ near, update, wallet, account }) => {
     setBalance(balance);
   };
 
+  // TO DO parseNearAmount
   const handlePlay = async () => {
     const contract = getContract(account);
     const gas = '200000000000000';
-    const outcome = await contract.play({}, gas, parseNearAmount(amount));
+    const outcome = await contract.play({}, gas, parseNearAmount(GAME_COST));
     console.log('Game result:', outcome);
     setNewAward(outcome);
     setShowModal(true);
@@ -73,12 +62,6 @@ export const Contract = ({ near, update, wallet, account }) => {
           <Achivements counters={balance} />
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
-            <input
-              placeholder='Amount (N)'
-              value={amount}
-              onChange={(e) => validateNumericInput(e.target.value)}
-              style={styles.input}
-            />
             <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />
           </div>
         </div>
@@ -108,7 +91,7 @@ const styles = {
   container: {
     minWidth: 800,
     width: '100%',
-    height: 700,
+    height: 650,
     //backgroundColor: 'rgba(255,255,255,0.8)',
     position: 'absolute',
     zIndex: 10,
@@ -118,7 +101,7 @@ const styles = {
     alignItems: 'center',
   },
   instructions: {
-    width: 450,
+    width: 480,
     backgroundColor: 'rgba(255,255,255,0.7)',
     borderRadius: 4,
     display: 'flex',
@@ -134,16 +117,6 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '30px 0px 10px 0px',
-  },
-  input: {
-    width: 120,
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    border: '1px solid gray',
-    margin: '0 20px 0 0',
-    padding: '0 0 0 10px',
-    fontSize: 15,
   },
   button: {
     margin: 0,

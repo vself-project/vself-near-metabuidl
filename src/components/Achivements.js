@@ -40,6 +40,7 @@ const styles = {
     justifyContent: 'space-around',
     alignItems: 'center',
     padding: '10px 10px 10px 10px',
+    margin: '0 0 40px 0',
     border: '1px solid black',
   },
   achivementContainer: {
