@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "REACT_APP_ENV=dev next dev",
     "build": "REACT_APP_ENV=dev next build",
+    "build:docker": "docker build . -t lootbox-app",
     "start": "REACT_APP_ENV=dev next start",
-    "start:staging": "REACT_APP_ENV=prod next start",
+    "start:docker": "docker run -p 3000:80 lootbox-app",
     "lint": "REACT_APP_ENV=dev next lint",
     "build:contracts": "cd contracts/nft-simple && ./build.sh && cd ../.. && cd contracts/game && ./build.sh && cd ../..",
     "patch:config": "node ./utils/patch-config.js",
