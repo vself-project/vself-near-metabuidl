@@ -7,6 +7,7 @@ import { createAccessKeyAccount, getContract } from '../utils/near-utils';
 import getConfig from '../config';
 import backgroundImage from '../public/background.jpg';
 import { Achivements } from '../components/Achivements';
+import { Button } from './Button';
 
 const {
   KeyPair,
@@ -74,9 +75,7 @@ export const Contract = ({ near, update, wallet, account }) => {
               onChange={(e) => validateNumericInput(e.target.value)}
               style={styles.input}
             />
-            <button onClick={() => handlePlay()} style={styles.button}>
-              Play
-            </button>
+            <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />
           </div>
 
           {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
@@ -139,5 +138,7 @@ const styles = {
   },
   button: {
     margin: 0,
+    padding: '10px 30px 10px 30px',
+    fontSize: 18,
   },
 };
