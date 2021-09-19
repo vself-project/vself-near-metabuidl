@@ -1,20 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-
-// Dinosaurus images
-import commonRarityImage from '../public/dinos/common.png';
-import uncommonRarityImage from '../public/dinos/uncommon.png';
-import rareImage from '../public/dinos/rare.png';
-import epicRarityImage from '../public/dinos/epic.png';
-import legendaryRarityImage from '../public/dinos/legendary.png';
-
-const RARITY_IMAGES = {
-  common: commonRarityImage,
-  uncommon: uncommonRarityImage,
-  rare: rareImage,
-  epic: epicRarityImage,
-  legendary: legendaryRarityImage,
-};
+import { RARITY_IMAGES } from '../constants/general';
 
 const Achivement = ({ rarity, counter }) => {
   return (

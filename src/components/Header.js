@@ -7,7 +7,7 @@ export const Header = ({ wallet, account }) => {
       <div style={styles.container}>
         <div style={styles.accountData}>
           <p style={styles.accountId}>{account.accountId + ':'}</p>
-          <p>{wallet.balance}</p>
+          <p style={styles.accountId}>{wallet.balance}</p>
         </div>
         <Button label={'Sign Out'} onClick={() => wallet.signOut()} />
       </div>
@@ -38,6 +38,7 @@ const styles = {
   },
   accountId: {
     marginRight: 10,
+    fontSize: 17,
   },
   flexEnd: {
     justifyContent: 'flex-end',

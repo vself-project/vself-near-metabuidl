@@ -38,7 +38,7 @@ const styles = {
     borderRadius: 4,
     color: 'white',
     border: '0px',
-    fontSize: 15,
+    fontSize: 17,
   },
   hover: {
     backgroundColor: '#263d5c',

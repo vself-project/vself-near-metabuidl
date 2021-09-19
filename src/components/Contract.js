@@ -6,8 +6,10 @@ import { createAccessKeyAccount, getContract } from '../utils/near-utils';
 
 import getConfig from '../config';
 import backgroundImage from '../public/background.jpg';
-import { Achivements } from '../components/Achivements';
+import { Achivements } from './Achivements';
 import { Button } from './Button';
+import { Modal } from './Modal';
+import { INSTRUCTIONS } from '../constants/general';
 
 const {
   KeyPair,
@@ -18,15 +20,14 @@ const {
 
 const { networkId, nodeUrl, walletUrl, nameSuffix, contractName, contractMethods } = getConfig();
 
-const INSTRUCTIONS =
-  'Welcome to Lootbox game! \n Here, you have a chance to win one of our amazing NFTs. Give it a try! Connect your NEAR wallet to collect it.';
-
 const COUNTERS = [7, 3, 0, 1, 0];
 
 export const Contract = ({ near, update, wallet, account }) => {
   const [credits, setCredits] = useState('');
   const [amount, setAmount] = useState('');
   const [flips, setFlips] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newAward, setNewAward] = useState(null);
 
   useEffect(() => {
     updateCredits();
@@ -64,6 +65,8 @@ export const Contract = ({ near, update, wallet, account }) => {
   if (wallet && wallet.signedIn) {
     return (
       <div>
+        {showModal && <Modal award={newAward} onClick={() => setShowModal(false)} />}
+
         <div style={styles.container}>
           <Achivements counters={COUNTERS} />
           <p>Current Balance: {formatNearAmount(credits, 0)}</p>
@@ -80,6 +83,7 @@ export const Contract = ({ near, update, wallet, account }) => {
 
           {flips.map((f, i) => (f ? <p key={i}>Won</p> : <p key={i}>Lost</p>))}
         </div>
+
         <Image
           src={backgroundImage}
           alt='No image'
