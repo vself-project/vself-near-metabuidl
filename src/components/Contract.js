@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import * as nearAPI from 'near-api-js';
 import { GAS, parseNearAmount } from '../state/near';
+import { get, set } from '../utils/storage';
 import Image from 'next/image';
-import { createAccessKeyAccount, getContract } from '../utils/near-utils';
+import { getContract } from '../utils/near-utils';
 
 import getConfig from '../config';
 import backgroundImage from '../public/background.jpg';
 import { Achivements } from './Achivements';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import { INSTRUCTIONS } from '../constants/general';
+import { INSTRUCTIONS, GAME_COST, NFT_SUPPLIES } from '../constants/general';
 
-const {
-  KeyPair,
-  utils: {
-    format: { formatNearAmount },
-  },
-} = nearAPI;
-
-const { networkId, nodeUrl, walletUrl, nameSuffix, contractName, contractMethods } = getConfig();
+const { contractName, contractMethods } = getConfig();
 
 export const Contract = ({ near, update, wallet, account }) => {
   const [balance, setBalance] = useState('');
-  const [amount, setAmount] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [newAward, setNewAward] = useState(null);
 
@@ -30,16 +22,18 @@ export const Contract = ({ near, update, wallet, account }) => {
     updateBalance();
   }, [account]);
 
-  // It allows input element to accept only digits
-  const validateNumericInput = (value) => {
-    if (!Number(value) && value !== '') {
-      return;
+  // Check if user has won the nft
+  useEffect(() => {
+    if (balance === '') return;
+    const oldBalance = get('OLD_BALANCE');
+    if (Object.keys(oldBalance).length == 0) return;
+    for (var i = 0; i < oldBalance.length; i++) {
+      if (oldBalance[i] == balance[i]) continue;
+      set('OLD_BALANCE', balance);
+      setNewAward(i);
+      setShowModal(true);
     }
-    if (value.slice(-1) == '.') {
-      value = value.slice(0, -1);
-    }
-    setAmount(value);
-  };
+  }, [balance]);
 
   const updateBalance = async () => {
     if (!account) return;
@@ -49,6 +43,7 @@ export const Contract = ({ near, update, wallet, account }) => {
     const contract = getContract(account);
     console.log('Contract:', contract);
     const balance = await contract.get_balance({ account_id: account.accountId });
+    const nftTotalBalance = await contract.get_nft_total_balance();
     console.log('Rewards balance:', balance);
     console.log('Gas', GAS);
     setBalance(balance);
@@ -57,11 +52,10 @@ export const Contract = ({ near, update, wallet, account }) => {
   const handlePlay = async () => {
     const contract = getContract(account);
     const gas = '200000000000000';
-    const outcome = await contract.play({}, gas, parseNearAmount(amount));
+    const balance = await contract.get_balance({ account_id: account.accountId });
+    set('OLD_BALANCE', balance);
+    const outcome = await contract.play({}, gas, parseNearAmount(GAME_COST));
     console.log('Game result:', outcome);
-    setNewAward(outcome);
-    setShowModal(true);
-    updateBalance();
   };
 
   if (wallet && wallet.signedIn) {
@@ -70,15 +64,9 @@ export const Contract = ({ near, update, wallet, account }) => {
         {showModal && <Modal award={newAward} onClick={() => setShowModal(false)} />}
 
         <div style={styles.container}>
-          <Achivements counters={balance} />
+          <Achivements counters={balance} supplies={NFT_SUPPLIES} />
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
-            <input
-              placeholder='Amount (N)'
-              value={amount}
-              onChange={(e) => validateNumericInput(e.target.value)}
-              style={styles.input}
-            />
             <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />
           </div>
         </div>
@@ -108,8 +96,7 @@ const styles = {
   container: {
     minWidth: 800,
     width: '100%',
-    height: 700,
-    //backgroundColor: 'rgba(255,255,255,0.8)',
+    height: 650,
     position: 'absolute',
     zIndex: 10,
     display: 'flex',
@@ -118,7 +105,7 @@ const styles = {
     alignItems: 'center',
   },
   instructions: {
-    width: 450,
+    width: 480,
     backgroundColor: 'rgba(255,255,255,0.7)',
     borderRadius: 4,
     display: 'flex',
@@ -134,16 +121,6 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '30px 0px 10px 0px',
-  },
-  input: {
-    width: 120,
-    height: 40,
-    borderRadius: 5,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    border: '1px solid gray',
-    margin: '0 20px 0 0',
-    padding: '0 0 0 10px',
-    fontSize: 15,
   },
   button: {
     margin: 0,

@@ -14,7 +14,13 @@ export const RARITY_IMAGES = {
   legendary: legendaryRarityImage,
 };
 
+// Cost of one game in NEAR
+export const GAME_COST = '2';
+
+// Limits for nfts amount from common to legendary
+export const NFT_SUPPLIES = [-1, 128, 32, 16, 4];
+
 // Text constants
 export const FOOTER_TEXT = 'Footer text';
 export const INSTRUCTIONS =
-  'Welcome to Lootbox game! \n Here, you have a chance to win one of our amazing NFTs. Give it a try! Connect your NEAR wallet to collect it.';
+  'Welcome to the Loot Box game! \n Here, you have a chance to win one of our amazing Dino-NFTs. Give it a try for only 2 NEAR per round! Connect your NEAR wallet to collect it.';

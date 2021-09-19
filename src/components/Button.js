@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+// The component accept style: normal, hover and pressed
 export const Button = ({ label, onClick, style = {} }) => {
   const [hover, setHover] = useState(false);
   const [pressed, setPressed] = useState(false);
