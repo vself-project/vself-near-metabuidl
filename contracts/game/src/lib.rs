@@ -1,11 +1,9 @@
 use borsh::{ BorshDeserialize, BorshSerialize };
 use near_sdk::{ext_contract};
 use near_sdk::{
-    env, near_bindgen, AccountId, Gas, Balance, PublicKey, Promise, PromiseResult,
-    collections::{ UnorderedMap },
-    json_types::{ U128, Base58PublicKey, ValidAccountId },
+    env, near_bindgen, AccountId, Gas, Balance, Promise, PromiseResult,
+    collections::{ UnorderedMap },    
 };
-use serde::Serialize;
 use std::convert::TryInto;
 
 #[global_allocator]
@@ -13,12 +11,10 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 const ONE_NEAR:u128 = 1_000_000_000_000_000_000_000_000;
 const MICRO_NEAR:u128 =   1_000_000_000_000_000_000_000;
-const PROB:u8 = 255; // 100%
 
 const GAS_FOR_MINTING: Gas = 10_000_000_000_000;
-const GAS_FOR_RESOLVE_TRANSFER: Gas = 10_000_000_000_000;
+const GAS_FOR_RESOLVE_OUTCOME: Gas = 10_000_000_000_000;
 const NO_DEPOSIT: Balance = 0;
-const MIN_ATTACHED_DEPOSIT: u128 = 100_000_000_000_000_000_000_000;
 pub type TokenId = String;
 
 /// Game rules
@@ -59,7 +55,7 @@ impl LootboxGame {
     pub fn new(owner_id: AccountId) -> Self {
         assert!(env::is_valid_account_id(owner_id.as_bytes()), "Invalid owner account");
         assert!(!env::state_exists(), "Already initialized");
-        let mut this = Self {
+        Self {
             owner_id,
             minted_legendary: 0,
             minted_epic: 0,
@@ -67,25 +63,22 @@ impl LootboxGame {
             minted_uncommon: 0,
             minted_common: 0,
             rewards: UnorderedMap::new(b"rewards".to_vec()),
-        };
-
-        this        
+        }        
     }
     
     #[payable]
     pub fn play(&mut self) -> Promise {
         let account_id = env::signer_account_id();
-        let deposit = env::attached_deposit();
-        let owner_id = env::current_account_id().to_string();
+        let deposit = env::attached_deposit();        
         
-        assert!(deposit > (ONE_NEAR - 1), "not enough currency to play");        
+        assert!(deposit > (ONE_NEAR - MICRO_NEAR), "not enough currency to play");        
         
         // Toss the dice (minimal logic for now)
         let rand: u8 = *env::random_seed().get(0).unwrap();
         let mut token_id: TokenId = "COMMON".to_string();
-        let mut metadata: String = "Congrats!".to_string();
+        let metadata: String = "Congrats! METABUIDL Dino-NFT is yours!".to_string();
 
-        // Decide what to mint for the player
+        // Decide what to mint for the player (default to common)
         if (rand < PROB_LEGENDARY) && (self.minted_legendary < CAP_LEGENDARY) {            
             token_id = "LEGENDARY".to_string();
         } else if (rand < PROB_EPIC) && (self.minted_epic < CAP_EPIC) {
@@ -94,9 +87,6 @@ impl LootboxGame {
             token_id = "RARE".to_string();
         } else if (rand < PROB_UNCOMMON) && (self.minted_uncommon < CAP_UNCOMMON) {
             token_id = "UNCOMMON".to_string();            
-        } else {
-            // Common
-            token_id = "COMMON".to_string();            
         }
 
         // Add time for token uniqness
@@ -117,7 +107,7 @@ impl LootboxGame {
             account_id,
             &env::current_account_id(),
             NO_DEPOSIT,
-            GAS_FOR_RESOLVE_TRANSFER,
+            GAS_FOR_RESOLVE_OUTCOME,
         )) 
     }
 
@@ -135,23 +125,23 @@ impl LootboxGame {
             let mut balance = self.rewards.get(&winner_id).unwrap_or(vec![0,0,0,0,0]);                        
             let mut result: usize = 0;
             
-            if (token_id == "COMMON") {                 
+            if token_id == "COMMON" {                 
                 result = 0;
                 self.minted_common = self.minted_common + 1;
             }
-            if (token_id == "UNCOMMON") { 
+            if token_id == "UNCOMMON" { 
                 result = 1;                
                 self.minted_uncommon = self.minted_uncommon + 1;
             }
-            if (token_id == "RARE") { 
+            if token_id == "RARE" { 
                 result = 2;                
                 self.minted_rare = self.minted_rare + 1;
             }
-            if (token_id == "EPIC") { 
+            if token_id == "EPIC" { 
                 result = 3;                
                 self.minted_epic = self.minted_epic + 1;
             }
-            if (token_id == "LEGENDARY") { 
+            if token_id == "LEGENDARY" { 
                 result = 4;
                 self.minted_legendary = self.minted_legendary + 1;
             }
@@ -166,10 +156,13 @@ impl LootboxGame {
     }
 
     /// Views
+
+    // Get personal balance of a player
     pub fn get_balance(&self, account_id: AccountId) -> Vec<u32> {
         self.rewards.get(&account_id).unwrap_or(vec![0, 0, 0, 0, 0])
     }
     
+    // Get total amount of NFTs minted so far
     pub fn get_nft_total_balance(&self) -> Vec<u32> {
         vec![
             self.minted_common,
@@ -191,8 +184,7 @@ trait NonFungibleToken {
     fn nft_token(&self, token_id: String) -> Option<Token>;
 }
 
-
-
+/// Callback pattern interface
 #[ext_contract(ext_self)]
 trait ResolvePurchase {
     fn nft_resolve_outcome(
