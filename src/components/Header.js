@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from './Button';
 
 export const Header = ({ wallet, account }) => {
   if (wallet && wallet.signedIn) {
@@ -6,21 +7,16 @@ export const Header = ({ wallet, account }) => {
       <div style={styles.container}>
         <div style={styles.accountData}>
           <p style={styles.accountId}>{account.accountId + ':'}</p>
-          <p>{wallet.balance}</p>
+          <p style={styles.accountId}>{wallet.balance}</p>
         </div>
-        <button style={styles.button} onClick={() => wallet.signOut()}>
-          {'Sign Out'}
-        </button>
+        <Button label={'Sign Out'} onClick={() => wallet.signOut()} />
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <></>
-      <button style={styles.button} onClick={() => wallet.signIn()}>
-        {'Sign In'}
-      </button>
+    <div style={{ ...styles.container, ...styles.flexEnd }}>
+      <Button label={'Sign In'} onClick={() => wallet.signIn()} />
     </div>
   );
 };
@@ -28,7 +24,7 @@ export const Header = ({ wallet, account }) => {
 const styles = {
   container: {
     backgroundColor: '#01182b',
-    height: 60,
+    height: 80,
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
@@ -42,8 +38,9 @@ const styles = {
   },
   accountId: {
     marginRight: 10,
+    fontSize: 17,
   },
-  button: {
-    margin: 0,
+  flexEnd: {
+    justifyContent: 'flex-end',
   },
 };

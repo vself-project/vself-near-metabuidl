@@ -1,6 +1,5 @@
 import React from 'react';
-
-const FOOTER_TEXT = 'Footer text';
+import { FOOTER_TEXT } from '../constants/general';
 
 export const Footer = () => {
   return <div style={styles.container}>{FOOTER_TEXT}</div>;
@@ -8,10 +7,12 @@ export const Footer = () => {
 
 const styles = {
   container: {
-    backgroundColor: 'pink',
+    backgroundColor: '#01182b',
     height: 100,
     width: '100%',
     display: 'flex',
     alignItems: 'center',
+    color: 'white',
+    padding: '0 20px 0 20px',
   },
 };
