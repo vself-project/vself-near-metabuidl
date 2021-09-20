@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GAS, parseNearAmount } from '../state/near';
+import { parseNearAmount } from '../state/near';
 import { get, set } from '../utils/storage';
 import Image from 'next/image';
 import { getContract } from '../utils/near-utils';
@@ -9,9 +9,9 @@ import backgroundImage from '../public/background.jpg';
 import { Achivements } from './Achivements';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import { INSTRUCTIONS, GAME_COST, NFT_SUPPLIES, STORAGE_BALANCE_KEY } from '../constants/general';
+import { INSTRUCTIONS, GAME_COST, STORAGE_BALANCE_KEY } from '../constants/general';
 
-const { contractName, contractMethods } = getConfig();
+const { contractName } = getConfig();
 
 export const Contract = ({ wallet, account }) => {
   const [balance, setBalance] = useState('');
@@ -39,15 +39,9 @@ export const Contract = ({ wallet, account }) => {
 
   const updateBalance = async () => {
     if (!account) return;
-    //const contract = new Contract(account, contractName, { ...contractMethods });
     console.log('Contract name:', contractName);
-    console.log('Contract methods:', contractMethods);
     const contract = getContract(account);
-    console.log('Contract:', contract);
     const balance = await contract.get_balance({ account_id: account.accountId });
-    //const nftTotalBalance = await contract.get_nft_total_balance();
-    console.log('Rewards balance:', balance);
-    console.log('Gas', GAS);
     setBalance(balance);
   };
 
@@ -56,8 +50,7 @@ export const Contract = ({ wallet, account }) => {
     const gas = '200000000000000';
     const balance = await contract.get_balance({ account_id: account.accountId });
     set(STORAGE_BALANCE_KEY, balance);
-    const outcome = await contract.play({}, gas, parseNearAmount(GAME_COST));
-    console.log('Game result:', outcome);
+    await contract.play({}, gas, parseNearAmount(GAME_COST));
   };
 
   if (wallet && wallet.signedIn) {
@@ -66,7 +59,7 @@ export const Contract = ({ wallet, account }) => {
         {showModal && <Modal award={newAward} onClick={() => setShowModal(false)} />}
 
         <div style={styles.container}>
-          <Achivements counters={balance} supplies={NFT_SUPPLIES} />
+          <Achivements counters={balance} />
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
             <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />

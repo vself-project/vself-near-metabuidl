@@ -2,18 +2,24 @@ import React from 'react';
 import Image from 'next/image';
 import { capitalizeFirstLetter } from '../utils/general';
 import { Button } from './Button';
-import { RARITY_IMAGES } from '../constants/general';
+import { RARITY_IMAGES, NFT_SUPPLIES } from '../constants/general';
 
 export const Modal = ({ award, onClick }) => {
   const getCongratulations = (award) => {
-    const message = Object.keys(RARITY_IMAGES)[award];
-    return `Congratulations! ${capitalizeFirstLetter(message)} catch today!`;
+    let message = Object.keys(RARITY_IMAGES)[award];
+    message = `Congratulations! ${capitalizeFirstLetter(message)} catch today!`;
+    if (award) {
+      message += ` \n There will be minted only ${NFT_SUPPLIES[award]} of them ever!`;
+    } else {
+      message += ` \n Lucky you!`;
+    }
+    return message;
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.box}>
-        <p style={styles.noMargin}>{getCongratulations(award)}</p>
+        <p style={styles.congratulations}>{getCongratulations(award)}</p>
         <Image
           src={RARITY_IMAGES[Object.keys(RARITY_IMAGES)[award]]}
           alt='No image'
@@ -42,16 +48,19 @@ const styles = {
   },
   box: {
     width: 500,
-    height: 300,
+    height: 340,
     backgroundColor: 'white',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
+    padding: '15px 20px 10px 20px',
   },
-  noMargin: {
+  congratulations: {
     margin: 0,
+    textAlign: 'center',
+    whiteSpace: 'pre-line',
   },
   button: {
     margin: 0,
