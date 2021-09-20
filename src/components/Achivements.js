@@ -2,9 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import { RARITY_IMAGES } from '../constants/general';
 
-const Achivement = ({ rarity, counter, supply }) => {
+const Achivement = ({ rarity, counter }) => {
   if (counter === undefined) return null;
-  const data = supply < 0 ? counter : `${counter}/${supply}`;
   return (
     <div key={rarity} style={styles.achivementContainer}>
       <p style={styles.label}>{rarity}</p>
@@ -17,23 +16,18 @@ const Achivement = ({ rarity, counter, supply }) => {
           layout='intrinsic'
         />
         <div style={styles.counterBox}>
-          <div style={styles.counter}>{data}</div>
+          <div style={styles.counter}>{counter}</div>
         </div>
       </div>
     </div>
   );
 };
 
-export const Achivements = ({ counters, supplies }) => {
+export const Achivements = ({ counters }) => {
   return (
     <div style={styles.container}>
       {Object.keys(RARITY_IMAGES).map((rarity, index) => (
-        <Achivement
-          key={index}
-          rarity={rarity}
-          counter={counters[index]}
-          supply={supplies[index]}
-        />
+        <Achivement key={index} rarity={rarity} counter={counters[index]} />
       ))}
     </div>
   );
@@ -82,7 +76,7 @@ const styles = {
     height: 30,
     backgroundColor: '#022e52',
     margin: '-2px 0 0 0',
-    padding: '0 8px 0 8px',
+    padding: '0 10px 0 10px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

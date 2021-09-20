@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GAS, parseNearAmount } from '../state/near';
+import { parseNearAmount } from '../state/near';
 import { get, set } from '../utils/storage';
 import Image from 'next/image';
 import { getContract } from '../utils/near-utils';
@@ -9,11 +9,11 @@ import backgroundImage from '../public/background.jpg';
 import { Achivements } from './Achivements';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import { INSTRUCTIONS, GAME_COST, NFT_SUPPLIES } from '../constants/general';
+import { INSTRUCTIONS, GAME_COST, STORAGE_BALANCE_KEY } from '../constants/general';
 
-const { contractName, contractMethods } = getConfig();
+const { contractName } = getConfig();
 
-export const Contract = ({ near, update, wallet, account }) => {
+export const Contract = ({ wallet, account }) => {
   const [balance, setBalance] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [newAward, setNewAward] = useState(null);
@@ -25,27 +25,23 @@ export const Contract = ({ near, update, wallet, account }) => {
   // Check if user has won the nft
   useEffect(() => {
     if (balance === '') return;
-    const oldBalance = get('OLD_BALANCE');
+    const oldBalance = get(STORAGE_BALANCE_KEY);
     if (Object.keys(oldBalance).length == 0) return;
     for (var i = 0; i < oldBalance.length; i++) {
-      if (oldBalance[i] == balance[i]) continue;
-      set('OLD_BALANCE', balance);
-      setNewAward(i);
-      setShowModal(true);
+      if (oldBalance[i] < balance[i]) {
+        set(STORAGE_BALANCE_KEY, balance);
+        setNewAward(i);
+        setShowModal(true);
+        break;
+      }
     }
   }, [balance]);
 
   const updateBalance = async () => {
     if (!account) return;
-    //const contract = new Contract(account, contractName, { ...contractMethods });
     console.log('Contract name:', contractName);
-    console.log('Contract methods:', contractMethods);
     const contract = getContract(account);
-    console.log('Contract:', contract);
     const balance = await contract.get_balance({ account_id: account.accountId });
-    const nftTotalBalance = await contract.get_nft_total_balance();
-    console.log('Rewards balance:', balance);
-    console.log('Gas', GAS);
     setBalance(balance);
   };
 
@@ -53,9 +49,8 @@ export const Contract = ({ near, update, wallet, account }) => {
     const contract = getContract(account);
     const gas = '200000000000000';
     const balance = await contract.get_balance({ account_id: account.accountId });
-    set('OLD_BALANCE', balance);
-    const outcome = await contract.play({}, gas, parseNearAmount(GAME_COST));
-    console.log('Game result:', outcome);
+    set(STORAGE_BALANCE_KEY, balance);
+    await contract.play({}, gas, parseNearAmount(GAME_COST));
   };
 
   if (wallet && wallet.signedIn) {
@@ -64,7 +59,7 @@ export const Contract = ({ near, update, wallet, account }) => {
         {showModal && <Modal award={newAward} onClick={() => setShowModal(false)} />}
 
         <div style={styles.container}>
-          <Achivements counters={balance} supplies={NFT_SUPPLIES} />
+          <Achivements counters={balance} />
           <div style={styles.instructions}>{INSTRUCTIONS}</div>
           <div style={styles.gameContainer}>
             <Button label={'Play'} style={{ normal: styles.button }} onClick={() => handlePlay()} />

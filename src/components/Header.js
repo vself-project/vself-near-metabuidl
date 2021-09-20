@@ -1,7 +1,14 @@
 import React from 'react';
 import { Button } from './Button';
+import { del } from '../utils/storage';
+import { STORAGE_BALANCE_KEY } from '../constants/general';
 
 export const Header = ({ wallet, account }) => {
+  const signOut = () => {
+    del(STORAGE_BALANCE_KEY);
+    wallet.signOut();
+  };
+
   if (wallet && wallet.signedIn) {
     return (
       <div style={styles.container}>
@@ -9,7 +16,7 @@ export const Header = ({ wallet, account }) => {
           <p style={styles.accountId}>{account.accountId + ':'}</p>
           <p style={styles.accountId}>{wallet.balance}</p>
         </div>
-        <Button label={'Sign Out'} onClick={() => wallet.signOut()} />
+        <Button label={'Sign Out'} onClick={signOut} />
       </div>
     );
   }

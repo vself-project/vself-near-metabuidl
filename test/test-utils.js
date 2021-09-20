@@ -93,7 +93,6 @@ const postSignedJson = async ({ account, contractName, url, data = {} }) => {
       ...(await getSignature(account)),
     }),
   }).then((res) => {
-    // console.log(res)
     return res.json();
   });
 };
